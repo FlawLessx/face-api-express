@@ -2,9 +2,7 @@ require("@tensorflow/tfjs-node");
 
 const faceapi = require("face-api.js");
 const minConfidence = 0.5;
-const faceDetectionOptions = new faceapi.SsdMobilenetv1Options({
-  minConfidence
-});
+const faceDetectionOptions = new faceapi.TinyFaceDetectorOptions();
 const canvas = require("canvas");
 const { Canvas, Image, ImageData } = canvas;
 faceapi.env.monkeyPatch({ Canvas, Image, ImageData });
@@ -14,21 +12,37 @@ module.exports = {
     await faceapi.nets.ssdMobilenetv1.loadFromDisk("./models");
     await faceapi.nets.faceLandmark68Net.loadFromDisk("./models");
     await faceapi.nets.faceRecognitionNet.loadFromDisk("./models");
+    await faceapi.nets.tinyFaceDetector.loadFromDisk("./models");
   },
-  detect: async (_image, detail) => {
+  detect: async (_image) => {
     const image = await canvas.loadImage(_image);
-    let detections;
+    let fullFaceDescription;
+    let result;
 
-    if (detail) {
-      detections = await faceapi
-        .detectAllFaces(image, faceDetectionOptions)
-        .withFaceLandmarks()
-        .withFaceDescriptors();
-    } else {
-      detections = await faceapi.detectAllFaces(image, faceDetectionOptions);
-    }
+    fullFaceDescription = await faceapi
+    .detectAllFaces(image, faceDetectionOptions)
+    .withFaceLandmarks()
+    .withFaceDescriptors();
 
-    return detections;
+    if (fullFaceDescription) {
+      var image_detection = this._draw_face(value, fullFaceDescription).split(',')[1];
+      
+      const buffDescriptor = Buffer.from(fullFaceDescription.descriptor, 'utf-8');
+      const base64Descriptor = buffDescriptor.toString('base64');
+
+      const buffImageDetection = Buffer.from(image_detection, 'utf-8');
+      const base64ImageDetection = buffImageDetection.toString('base64');
+      
+      result = {
+        "descriptor": base64Descriptor,
+        "image_detection": base64ImageDetection
+      }
+
+      return result;
+      // await this._save_descriptor($(value).data('id'), fullFaceDescription.descriptor, image_detection);
+  }
+
+    return result;
   },
   detectMatches: async ({ _image, _faces, draw }) => {
     const image = await canvas.loadImage(_image);
@@ -110,5 +124,15 @@ module.exports = {
     }
 
     return { detections, detectedImage };
+  },
+  _draw_face: async (image, detections) => {
+    const canvas = faceapi.createCanvasFromMedia(image);
+    const displaySize = { width: image.naturalWidth, height: image.naturalHeight };
+    faceapi.matchDimensions(canvas, displaySize);
+    const resizedDetections = faceapi.resizeResults(detections, displaySize);
+    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+    faceapi.draw.drawDetections(canvas, resizedDetections);
+    faceapi.draw.drawFaceLandmarks(canvas, resizedDetections);
+    return canvas.toDataURL();
   }
 };
