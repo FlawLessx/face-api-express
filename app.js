@@ -1,6 +1,6 @@
 const express = require("express");
 const fileUpload = require("express-fileupload");
-const faceApiService = require("./faceApiService");
+const faceApiService = require("./faceapiService");
 
 const app = express();
 const port = process.env.PORT || 3000;
