@@ -1,0 +1,2 @@
+https://stackoverflow.com/questions/47068709/your-cpu-supports-instructions-that-this-tensorflow-binary-was-not-compiled-to-u
+https://peterbabic.dev/blog/install-tfjs-node-from-source/#:~:text=Install%20tfjs-node%20from%20source%201%20Step%201%3A%20Clone,...%205%20Step%205%3A%20Build%20the%20libtensorflow%20package

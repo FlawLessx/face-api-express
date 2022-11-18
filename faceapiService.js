@@ -1,4 +1,3 @@
-const save = require("./utils/saveFile");
 const path = require("path");
 
 const tf = require("@tensorflow/tfjs-node");
@@ -50,10 +49,7 @@ async function main(file) {
   await faceapi.nets.faceExpressionNet.loadFromDisk(modelPath);
   await faceapi.nets.ageGenderNet.loadFromDisk(modelPath)
   
-  optionsSSDMobileNet = new faceapi.SsdMobilenetv1Options({
-    minConfidence: 0.5,
-  });
-  ;
+  optionsSSDMobileNet = new faceapi.TinyFaceDetectorOptions();
 
   // const tensor = faceapi.tf.node.decodeImage(file);
   const tensor = await image(file);
