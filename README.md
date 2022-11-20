@@ -4,8 +4,8 @@
 * [a. Prerequisites](#prerequisites)
 * [B. Installation](#installation)
 * [C. How to run](#how-to-run)
-* [D. Handle Not Supported CPU](#how-to-run)
-* [E. Run App As A Service](#how-to-run)
+* [D. Handle Not Supported CPU](#handle-not-supported-cpu)
+* [E. Run App As A Service](#run-app-as-a-service)
 
 ## <a name="prerequisites"></a> A. Prerequisites
 
@@ -45,7 +45,7 @@ tar -xf node_modules/@tensorflow/tfjs-node/deps/prebuild-ubuntu.tar.gz
 
 Then try running again
 
-## E. Run App As A Service
+## <a name="run-app-as-a-service"></a> E. Run App As A Service
 
 If run app like section C, it will stopped if ssh connection closed or server started, so to handle that using a package named pm2.
 
